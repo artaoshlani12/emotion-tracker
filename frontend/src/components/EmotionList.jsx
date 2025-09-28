@@ -7,6 +7,13 @@ const moodIcons = {
   calm: "😌"
 };
 
+const moodColors = {
+  happy: "linear-gradient(135deg, #f6d365, #fda085)",
+  sad: "linear-gradient(135deg, #a1c4fd, #c2e9fb)",
+  stressed: "linear-gradient(135deg, #ff758c, #ff7eb3)",
+  calm: "linear-gradient(135deg, #89f7fe, #66a6ff)"
+};
+
 export default function EmotionList({ emotions }) {
   const styles = `
     .emotion-list {
@@ -16,6 +23,9 @@ export default function EmotionList({ emotions }) {
       flex-direction: column;
       gap: 1rem;
       margin-bottom: 2rem;
+      max-height: 70vh;
+      overflow-y: auto;
+      padding-right: 5px;
     }
 
     .emotion-item {
@@ -28,11 +38,31 @@ export default function EmotionList({ emotions }) {
       justify-content: space-between;
       opacity: 0;
       animation: fadeSlide 0.6s forwards;
-      transition: transform 0.3s;
+      transition: transform 0.3s, box-shadow 0.3s;
+      flex-wrap: wrap;
     }
 
     .emotion-item:hover {
-      transform: translateY(-4px);
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.35);
+    }
+
+    .emotion-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      color: #fff;
+      flex: 1;
+    }
+
+    .emotion-note {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .emotion-date {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.6);
     }
 
     @keyframes fadeSlide {
@@ -44,6 +74,7 @@ export default function EmotionList({ emotions }) {
       color: #fff;
       font-style: italic;
       margin-bottom: 1rem;
+      text-align: center;
     }
   `;
 
@@ -58,9 +89,26 @@ export default function EmotionList({ emotions }) {
 
   return (
     <div className="emotion-list">
-      {emotions.map((emo) => (
-        <div key={emo._id} className="emotion-item">
-          <span>{moodIcons[emo.mood] || "❔"} {emo.mood.toUpperCase()} - {emo.note}</span>
+      {emotions.map((emo, index) => (
+        <div
+          key={emo._id}
+          className="emotion-item"
+          style={{
+            background: moodColors[emo.mood] || "rgba(255,255,255,0.25)",
+            animationDelay: `${index * 0.1}s`
+          }}
+        >
+          <div className="emotion-content">
+            <span style={{ fontSize: "1.3rem" }}>
+              {moodIcons[emo.mood] || "❔"} {emo.mood.toUpperCase()}
+            </span>
+            <span className="emotion-note">{emo.note}</span>
+            {emo.createdAt && (
+              <span className="emotion-date">
+                {new Date(emo.createdAt).toLocaleString()}
+              </span>
+            )}
+          </div>
         </div>
       ))}
     </div>
