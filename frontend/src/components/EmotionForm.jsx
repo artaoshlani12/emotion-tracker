@@ -52,27 +52,37 @@ export default function EmotionForm({ onAdd }) {
     setNewMood("");
   };
 
-  /* ================= CSS MODERNE + RESPONSIVE ================= */
   const styles = `
-    body {
+    html, body, #root {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
       font-family: 'Poppins', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #12121f;
     }
 
     .form {
-      width: 100%;
+      width: 95%;
       max-width: 500px;
+      max-height: 90vh;
       background: rgba(20, 20, 40, 0.6);
       border: 1px solid rgba(255,255,255,0.1);
       backdrop-filter: blur(20px);
       border-radius: 20px;
-      padding: 35px;
+      padding: 25px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 20px;
       animation: fadeIn 0.6s ease forwards;
-      margin: 0 auto;
+      overflow-y: auto;
       box-sizing: border-box;
+      margin: auto;
     }
 
     @keyframes fadeIn {
@@ -83,18 +93,19 @@ export default function EmotionForm({ onAdd }) {
     .form h2 {
       color: #fff;
       text-align: center;
-      font-size: 2.2rem;
+      font-size: 2rem;
       font-weight: 700;
       background: linear-gradient(90deg, #ff758c, #ff7eb3);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       letter-spacing: 1px;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
 
     .input, .textarea, .mood-list {
       width: 100%;
-      padding: 14px 16px;
+      max-width: 100%;
+      padding: 12px 14px;
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,0.15);
       outline: none;
@@ -112,12 +123,14 @@ export default function EmotionForm({ onAdd }) {
     }
 
     .textarea {
-      min-height: 110px;
+      min-height: 80px;
+      max-height: 35vh;
       resize: none;
+      overflow-y: auto;
     }
 
     .btn {
-      padding: 13px 26px;
+      padding: 12px 22px;
       font-size: 1rem;
       font-weight: 600;
       color: #fff;
@@ -130,35 +143,34 @@ export default function EmotionForm({ onAdd }) {
     }
 
     .btn:hover {
-      transform: translateY(-3px) scale(1.02);
+      transform: translateY(-2px) scale(1.02);
       box-shadow: 0 12px 30px rgba(255, 126, 179, 0.55);
       background: linear-gradient(135deg, #ff758c, #ff7eb3);
     }
 
     .mood-input-container {
       display: flex;
-      gap: 12px;
-      width: 100%;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     .mood-input-container input {
-      flex: 1;
+      flex: 1 1 auto;
     }
 
-    /* ================= RESPONSIVE PËR TELEFON ================= */
     @media (max-width: 480px) {
       .form {
-        padding: 25px 15px;
-        max-width: 95%;
+        padding: 20px 10px;
+        width: 95%;
       }
 
       .input, .textarea, .mood-list {
         font-size: 0.95rem;
-        padding: 12px 14px;
+        padding: 10px 12px;
       }
 
       .btn {
-        padding: 12px 20px;
+        padding: 10px 18px;
         font-size: 0.95rem;
       }
 
