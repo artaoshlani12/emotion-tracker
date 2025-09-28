@@ -3,69 +3,172 @@ import { useState, useEffect } from "react";
 export default function EmotionForm({ onAdd }) {
   const [mood, setMood] = useState("");
   const [note, setNote] = useState("");
-  const [moods, setMoods] = useState([]); // lista dinamike e gjendjeve
-  const [newMood, setNewMood] = useState(""); // input për mood të ri
+  const [moods, setMoods] = useState([]);
+  const [newMood, setNewMood] = useState("");
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const fetchEmotions = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/emotions");
+        const data = await res.json();
+        const uniqueMoods = [...new Set(data.map(e => e.mood))];
+        setMoods(uniqueMoods);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchEmotions();
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!mood) return alert("Zgjidh një gjendje!");
-
-    const newEmotion = { mood, note, id: Date.now() };
-    onAdd(newEmotion); // shtohet vetëm nga përdoruesi
-    setMood("");
-    setNote("");
+    try {
+      const res = await fetch("http://localhost:5000/emotions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mood, note }),
+      });
+      if (!res.ok) throw new Error("Gabim gjatë ruajtjes së emocioneve");
+      const savedEmotion = await res.json();
+      onAdd(savedEmotion);
+      setMood("");
+      setNote("");
+      if (!moods.includes(savedEmotion.mood)) setMoods([savedEmotion.mood, ...moods]);
+    } catch (err) {
+      console.error(err);
+      alert("Nuk mund të ruhen të dhënat në DB");
+    }
   };
 
   const handleAddMood = () => {
     if (!newMood) return;
-    setMoods([newMood, ...moods]); // shto mood në listë
+    if (!moods.includes(newMood)) {
+      setMoods([newMood, ...moods]);
+      alert(`Gjendja "${newMood}" u shtua!`);
+    } else {
+      alert(`Gjendja "${newMood}" ekziston tashmë!`);
+    }
     setNewMood("");
-    alert(`Gjendja "${newMood}" u shtua!`);
   };
 
+  /* ================= CSS MODERNE + RESPONSIVE ================= */
   const styles = `
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+
     .form {
       width: 100%;
-      max-width: 450px;
-      background: rgba(255,255,255,0.15);
-      padding: 25px;
+      max-width: 500px;
+      background: rgba(20, 20, 40, 0.6);
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(20px);
       border-radius: 20px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      margin-bottom: 2rem;
+      padding: 35px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 10px;
+      gap: 22px;
+      animation: fadeIn 0.6s ease forwards;
+      margin: 0 auto;
+      box-sizing: border-box;
     }
-    .input, .textarea {
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form h2 {
+      color: #fff;
+      text-align: center;
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #ff758c, #ff7eb3);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+    }
+
+    .input, .textarea, .mood-list {
       width: 100%;
-      padding: 12px;
-      border-radius: 12px;
-      border: none;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.15);
       outline: none;
-      background: rgba(255,255,255,0.5);
       font-size: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
     }
+
+    .input:focus, .textarea:focus, .mood-list:focus {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: #ff7eb3;
+      box-shadow: 0 0 8px rgba(255, 126, 179, 0.7);
+    }
+
     .textarea {
-      min-height: 90px;
+      min-height: 110px;
       resize: none;
     }
+
     .btn {
-      padding: 10px 20px;
-      background: #4facfe;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
+      padding: 13px 26px;
       font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(135deg, #ff7eb3, #ff758c);
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 8px 20px rgba(255, 126, 179, 0.35);
     }
+
     .btn:hover {
-      background: #00f2fe;
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(255, 126, 179, 0.55);
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
     }
-    .mood-list {
+
+    .mood-input-container {
+      display: flex;
+      gap: 12px;
       width: 100%;
-      margin-bottom: 10px;
+    }
+
+    .mood-input-container input {
+      flex: 1;
+    }
+
+    /* ================= RESPONSIVE PËR TELEFON ================= */
+    @media (max-width: 480px) {
+      .form {
+        padding: 25px 15px;
+        max-width: 95%;
+      }
+
+      .input, .textarea, .mood-list {
+        font-size: 0.95rem;
+        padding: 12px 14px;
+      }
+
+      .btn {
+        padding: 12px 20px;
+        font-size: 0.95rem;
+      }
+
+      .mood-input-container {
+        flex-direction: column;
+      }
+
+      .mood-input-container input, .mood-input-container .btn {
+        width: 100%;
+      }
     }
   `;
 
@@ -79,8 +182,7 @@ export default function EmotionForm({ onAdd }) {
     <form className="form" onSubmit={handleSubmit}>
       <h2>Shto Emocion</h2>
 
-      {/* Input për mood të ri */}
-      <div style={{ display: "flex", gap: "10px", width: "100%" }}>
+      <div className="mood-input-container">
         <input
           className="input"
           placeholder="Shto gjendje të re..."
@@ -88,12 +190,15 @@ export default function EmotionForm({ onAdd }) {
           onChange={(e) => setNewMood(e.target.value)}
         />
         <button type="button" className="btn" onClick={handleAddMood}>
-          Shto Mood
+          + Mood
         </button>
       </div>
 
-      {/* Dropdown me mood dinamike */}
-      <select value={mood} onChange={(e) => setMood(e.target.value)} className="input mood-list">
+      <select
+        value={mood}
+        onChange={(e) => setMood(e.target.value)}
+        className="mood-list"
+      >
         <option value="">-- Zgjidh gjendjen --</option>
         {moods.map((m, i) => (
           <option key={i} value={m}>{m}</option>
@@ -104,9 +209,10 @@ export default function EmotionForm({ onAdd }) {
         placeholder="Shënim..."
         value={note}
         onChange={(e) => setNote(e.target.value)}
-        className="input textarea"
+        className="textarea"
       />
-      <button type="submit" className="btn">Ruaj</button>
+
+      <button type="submit" className="btn">💾 Ruaj</button>
     </form>
   );
 }

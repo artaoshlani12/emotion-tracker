@@ -53,14 +53,14 @@ export default function EmotionList({ emotions }) {
     document.head.appendChild(style);
   }, []);
 
-  if (emotions.length === 0)
+  if (!emotions || emotions.length === 0)
     return <p className="no-emotions">Nuk ka emocione të regjistruara ende.</p>;
 
   return (
     <div className="emotion-list">
       {emotions.map((emo) => (
-        <div key={emo.id} className="emotion-item">
-          <span>{moodIcons[emo.mood]} {emo.mood.toUpperCase()} - {emo.note}</span>
+        <div key={emo._id} className="emotion-item">
+          <span>{moodIcons[emo.mood] || "❔"} {emo.mood.toUpperCase()} - {emo.note}</span>
         </div>
       ))}
     </div>
