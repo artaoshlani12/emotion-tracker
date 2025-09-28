@@ -52,93 +52,87 @@ export default function EmotionForm({ onAdd }) {
     setNewMood("");
   };
 
-  /* ================= CSS MË NGJYRËT ================= */
+  /* ================= CSS MODERNE + RESPONSIVE ================= */
   const styles = `
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+
     .form {
       width: 100%;
       max-width: 500px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
-      backdrop-filter: blur(25px);
-      border-radius: 25px;
-      padding: 30px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      background: rgba(20, 20, 40, 0.6);
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 35px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      gap: 22px;
+      animation: fadeIn 0.6s ease forwards;
+      margin: 0 auto;
+      box-sizing: border-box;
     }
 
-    .form:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .form h2 {
       color: #fff;
       text-align: center;
-      font-size: 2rem;
-      margin-bottom: 10px;
-      text-shadow: 1px 1px 6px rgba(0,0,0,0.6);
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #ff758c, #ff7eb3);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
     }
 
-    .input, .textarea {
+    .input, .textarea, .mood-list {
       width: 100%;
       padding: 14px 16px;
-      border-radius: 15px;
-      border: none;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.15);
       outline: none;
       font-size: 1rem;
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
       color: #fff;
-      box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
-      transition: background 0.3s ease, transform 0.2s ease;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
     }
 
-    .input:focus, .textarea:focus {
-      background: rgba(255, 255, 255, 0.35);
-      transform: scale(1.02);
+    .input:focus, .textarea:focus, .mood-list:focus {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: #ff7eb3;
+      box-shadow: 0 0 8px rgba(255, 126, 179, 0.7);
     }
 
     .textarea {
-      min-height: 100px;
+      min-height: 110px;
       resize: none;
-      color: #f1f1f1;
-      font-weight: 500;
     }
 
     .btn {
-      padding: 12px 25px;
+      padding: 13px 26px;
       font-size: 1rem;
       font-weight: 600;
       color: #fff;
-      background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+      background: linear-gradient(135deg, #ff7eb3, #ff758c);
       border: none;
-      border-radius: 15px;
+      border-radius: 14px;
       cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      transition: all 0.25s ease;
+      box-shadow: 0 8px 20px rgba(255, 126, 179, 0.35);
     }
 
     .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-      background: linear-gradient(135deg, #feb47b 0%, #ff7e5f 100%);
-    }
-
-    .mood-list {
-      width: 100%;
-      border-radius: 15px;
-      background: rgba(255, 255, 255, 0.25);
-      padding: 14px 16px;
-      color: #fff;
-      font-weight: 500;
-      box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
-      transition: background 0.3s ease, transform 0.2s ease;
-    }
-
-    .mood-list:focus {
-      background: rgba(255, 255, 255, 0.4);
-      transform: scale(1.02);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(255, 126, 179, 0.55);
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
     }
 
     .mood-input-container {
@@ -149,12 +143,32 @@ export default function EmotionForm({ onAdd }) {
 
     .mood-input-container input {
       flex: 1;
-      background: rgba(255, 255, 255, 0.15);
-      color: #fff;
     }
 
-    .mood-input-container input:focus {
-      background: rgba(255, 255, 255, 0.3);
+    /* ================= RESPONSIVE PËR TELEFON ================= */
+    @media (max-width: 480px) {
+      .form {
+        padding: 25px 15px;
+        max-width: 95%;
+      }
+
+      .input, .textarea, .mood-list {
+        font-size: 0.95rem;
+        padding: 12px 14px;
+      }
+
+      .btn {
+        padding: 12px 20px;
+        font-size: 0.95rem;
+      }
+
+      .mood-input-container {
+        flex-direction: column;
+      }
+
+      .mood-input-container input, .mood-input-container .btn {
+        width: 100%;
+      }
     }
   `;
 
@@ -176,7 +190,7 @@ export default function EmotionForm({ onAdd }) {
           onChange={(e) => setNewMood(e.target.value)}
         />
         <button type="button" className="btn" onClick={handleAddMood}>
-          Shto Mood
+          + Mood
         </button>
       </div>
 
@@ -198,7 +212,7 @@ export default function EmotionForm({ onAdd }) {
         className="textarea"
       />
 
-      <button type="submit" className="btn">Ruaj</button>
+      <button type="submit" className="btn">💾 Ruaj</button>
     </form>
   );
 }
