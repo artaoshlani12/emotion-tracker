@@ -30,7 +30,6 @@ export default function App() {
   const addEmotion = (newEmotion) => {
     setEmotions((prev) => [newEmotion, ...prev]);
 
-    // Shto mood të ri në addedMoods nëse nuk ekziston
     if (newEmotion.mood && !addedMoods.includes(newEmotion.mood)) {
       setAddedMoods((prev) => [newEmotion.mood, ...prev]);
     }
@@ -42,14 +41,12 @@ export default function App() {
       prev.map((e) => (e._id === id ? { ...e, ...updatedEmotion } : e))
     );
 
-    // Update në backend
     fetch(`http://localhost:5000/emotions/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedEmotion),
     }).catch(console.error);
 
-    // Shto mood i ri në addedMoods nëse nuk ekziston
     if (updatedEmotion.mood && !addedMoods.includes(updatedEmotion.mood)) {
       setAddedMoods((prev) => [updatedEmotion.mood, ...prev]);
     }
@@ -61,34 +58,34 @@ export default function App() {
 
     setEmotions((prev) => prev.filter((e) => e._id !== id));
 
-    // Delete në backend
     fetch(`http://localhost:5000/emotions/${id}`, { method: "DELETE" }).catch(
       console.error
     );
   };
 
-  // ================= CSS MODERNE ME GLASSMORPHISM =================
+  // ================= CSS MODERNE ME GLASSMORPHISM FULL SCREEN =================
   useEffect(() => {
     const style = document.createElement("style");
     style.innerHTML = `
-      body {
+      html, body {
         margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
         font-family: 'Poppins', sans-serif;
         background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
         backdrop-filter: blur(15px);
-        min-height: 100vh;
         display: flex;
         justify-content: center;
-        align-items: flex-start;
-        padding: 40px 20px;
+        align-items: center;
       }
       .app-container {
         width: 100%;
-        max-width: 650px;
+        height: 100%;
         background: rgba(20, 20, 40, 0.6);
-        border-radius: 25px;
-        padding: 35px;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+        border-radius: 0;
+        padding: 40px;
+        box-sizing: border-box;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -96,6 +93,7 @@ export default function App() {
         backdrop-filter: blur(20px);
         border: 1px solid rgba(255,255,255,0.1);
         animation: fadeIn 0.6s ease forwards;
+        overflow-y: auto;
       }
       @keyframes fadeIn {
         from { opacity: 0; transform: translateY(20px); }
@@ -144,6 +142,8 @@ export default function App() {
       }
       .content {
         width: 100%;
+        flex: 1;
+        overflow-y: auto;
         animation: fadeInUp 0.7s ease;
       }
       @keyframes fadeInUp {

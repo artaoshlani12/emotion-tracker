@@ -129,6 +129,26 @@ export default function EmotionForm({ onAdd }) {
       overflow-y: auto;
     }
 
+    /* 🎨 Stil për dropdown */
+    .mood-list {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .mood-list option {
+      background: #1e1e2f;
+      color: #fff;
+    }
+
+    .mood-list option:checked {
+      background: linear-gradient(135deg, #ff7eb3, #ff758c);
+      color: #fff;
+    }
+
     .btn {
       padding: 12px 22px;
       font-size: 1rem;

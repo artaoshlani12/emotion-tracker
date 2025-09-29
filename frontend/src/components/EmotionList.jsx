@@ -170,7 +170,7 @@ export default function EmotionList({ emotions, onUpdate, onDelete, addedMoods }
             <>
               <div className="emotion-content">
                 <span style={{ fontSize: "1.3rem" }}>
-                  {moodIcons[emo.mood] || "❔"} {emo.mood.toUpperCase()}
+                  {moodIcons[emo.mood] || ""} {emo.mood.toUpperCase()}
                 </span>
                 <span className="emotion-note">{emo.note}</span>
                 {emo.createdAt && (
