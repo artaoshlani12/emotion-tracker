@@ -12,7 +12,6 @@ export default function EmotionList({ emotions, onUpdate, onDelete, addedMoods }
   const [editNote, setEditNote] = useState("");
   const [editMood, setEditMood] = useState("");
 
-  // Ruan ndryshimet në localStorage pas çdo update/delete
   useEffect(() => {
     if (emotions && emotions.length > 0) {
       localStorage.setItem("emotions", JSON.stringify(emotions));
@@ -41,15 +40,13 @@ export default function EmotionList({ emotions, onUpdate, onDelete, addedMoods }
   const styles = `
     .emotion-list {
       width: 100%;
-      max-width: 650px;
+      min-height: 100vh;   /* faqja zgjatet sipas përmbajtjes */
       display: flex;
       flex-direction: column;
       gap: 1rem;
-      margin: auto;
-      margin-bottom: 2rem;
-      max-height: 70vh;
-      overflow-y: auto;
-      padding-right: 5px;
+      padding: 1rem;
+      overflow: visible;   /* ✅ s’ka scroll */
+      box-sizing: border-box;
     }
     .emotion-item {
       background: rgba(255, 255, 255, 0.25);
@@ -125,8 +122,8 @@ export default function EmotionList({ emotions, onUpdate, onDelete, addedMoods }
     .no-emotions {
       color: #fff;
       font-style: italic;
-      margin-bottom: 1rem;
       text-align: center;
+      margin-top: 2rem;
     }
   `;
 
