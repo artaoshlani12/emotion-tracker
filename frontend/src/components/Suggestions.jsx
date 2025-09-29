@@ -8,49 +8,81 @@ export default function Suggestions() {
     "Bëj një pushim ☕"
   ]);
   const [newSuggestion, setNewSuggestion] = useState("");
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editingText, setEditingText] = useState("");
 
   const handleAddSuggestion = () => {
-    if (!newSuggestion) return;
-    setSuggestions([newSuggestion, ...suggestions]);
-    alert(`Sugjerimi "${newSuggestion}" u shtua!`);
+    if (!newSuggestion.trim()) return;
+    setSuggestions([...suggestions, newSuggestion]);
     setNewSuggestion("");
   };
 
+  const handleDelete = (index) => {
+    setSuggestions(suggestions.filter((_, i) => i !== index));
+    if (editingIndex === index) {
+      setEditingIndex(null);
+      setEditingText("");
+    }
+  };
+
+  const handleEdit = (index) => {
+    setEditingIndex(index);
+    setEditingText(suggestions[index]);
+  };
+
+  const handleSave = (index) => {
+    const updated = [...suggestions];
+    updated[index] = editingText;
+    setSuggestions(updated);
+    setEditingIndex(null);
+    setEditingText("");
+  };
+
   const styles = `
-    .suggestions {
+    html, body, #root {
+      margin: 0;
+      padding: 0;
       width: 100%;
-      max-width: 500px;
-      background: rgba(20, 20, 40, 0.6);
-      border: 1px solid rgba(255,255,255,0.1);
-      backdrop-filter: blur(20px);
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1f1f2e, #2e2e4d);
+    }
+
+    .suggestions-container {
+      width: 100%;
+      min-height: 100vh;
+      padding: 30px 40px;
+      box-sizing: border-box;
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      margin: 0 auto;
-      box-sizing: border-box;
-      animation: fadeIn 0.6s ease forwards;
+      gap: 30px;
     }
 
     .suggestions h2 {
-      font-size: 2rem;
-      text-align: center;
-      font-weight: 700;
+      font-size: 2.6rem;
+      font-weight: 800;
       color: #fff;
       background: linear-gradient(90deg, #ff758c, #ff7eb3);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 15px;
+      text-align: center;
+      margin: 0;
+      margin-bottom: 35px; /* më shumë hapësirë poshtë titullit */
+    }
+
+    .input-wrapper {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      flex-wrap: wrap;
     }
 
     .input-suggestion {
       flex: 1;
-      padding: 14px 16px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.15);
-      background: rgba(255,255,255,0.1);
+      padding: 16px 18px; /* pak më shumë padding për inputin */
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
       color: #fff;
       font-size: 1rem;
       outline: none;
@@ -60,79 +92,105 @@ export default function Suggestions() {
     .input-suggestion:focus {
       background: rgba(255,255,255,0.2);
       border-color: #ff7eb3;
-      box-shadow: 0 0 8px rgba(255,126,179,0.7);
+      box-shadow: 0 0 10px rgba(255,126,179,0.5);
     }
 
     .btn-add {
-      padding: 13px 26px;
+      padding: 14px 28px;
       font-size: 1rem;
       font-weight: 600;
       color: #fff;
       background: linear-gradient(135deg, #ff7eb3, #ff758c);
       border: none;
-      border-radius: 14px;
+      border-radius: 18px;
       cursor: pointer;
       transition: all 0.25s ease;
-      box-shadow: 0 8px 20px rgba(255,126,179,0.35);
+      box-shadow: 0 10px 25px rgba(255,126,179,0.4);
     }
 
     .btn-add:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 12px 30px rgba(255,126,179,0.55);
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 14px 35px rgba(255,126,179,0.55);
       background: linear-gradient(135deg, #ff758c, #ff7eb3);
     }
 
-    ul {
-      padding: 0;
-      margin: 0;
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    .cards {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 20px; /* hapësirë poshtë inputit */
     }
 
-    .suggestion-item {
-      padding: 12px 16px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-      font-size: 1rem;
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px 18px;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      transition: all 0.25s ease;
       opacity: 0;
-      transform: translateY(10px);
+      transform: translateY(15px) scale(0.95);
       animation: fadeSlide 0.5s forwards;
     }
 
-    .suggestion-item:hover {
-      background: rgba(255,255,255,0.25);
+    .card:hover {
       transform: scale(1.03);
+      background: rgba(255,255,255,0.12);
+    }
+
+    .card-text {
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 600;
+      word-break: break-word;
+    }
+
+    .card-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .action-btn {
+      background: transparent;
+      border: none;
+      color: #ff758c;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .action-btn:hover {
+      transform: scale(1.3);
+    }
+
+    .edit-input {
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      outline: none;
+      font-size: 1.1rem;
+      font-weight: 600;
     }
 
     @keyframes fadeSlide {
       to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
       }
     }
 
-    /* RESPONSIVE PËR TELEFON */
-    @media (max-width: 480px) {
-      .suggestions {
-        padding: 25px 15px;
-        max-width: 95%;
+    @media (max-width: 768px) {
+      .suggestions-container {
+        padding: 20px 15px;
       }
-
-      .input-suggestion {
-        font-size: 0.95rem;
-        padding: 12px 14px;
-      }
-
-      .btn-add {
-        padding: 12px 20px;
-        font-size: 0.95rem;
-      }
-
-      ul {
-        gap: 8px;
+      .cards {
+        grid-template-columns: 1fr;
       }
     }
   `;
@@ -144,32 +202,54 @@ export default function Suggestions() {
   }, []);
 
   return (
-    <div className="suggestions">
-      <h2>Sugjerime për gjendjen</h2>
+    <div className="suggestions-container">
+      <div className="suggestions">
+        <h2>Sugjerime për gjendjen</h2>
 
-      <div style={{ display: "flex", gap: "12px", width: "100%", flexWrap: "wrap" }}>
-        <input
-          className="input-suggestion"
-          placeholder="Shto sugjerim të ri..."
-          value={newSuggestion}
-          onChange={(e) => setNewSuggestion(e.target.value)}
-        />
-        <button type="button" className="btn-add" onClick={handleAddSuggestion}>
-          Shto
-        </button>
+        <div className="input-wrapper">
+          <input
+            className="input-suggestion"
+            placeholder="Shto sugjerim të ri..."
+            value={newSuggestion}
+            onChange={(e) => setNewSuggestion(e.target.value)}
+          />
+          <button className="btn-add" onClick={handleAddSuggestion}>
+            Shto
+          </button>
+        </div>
+
+        <div className="cards">
+          {suggestions.map((s, i) => (
+            <div
+              key={i}
+              className="card"
+              style={{ animationDelay: `${i * 0.08}s` }}
+            >
+              {editingIndex === i ? (
+                <>
+                  <input
+                    className="edit-input"
+                    value={editingText}
+                    onChange={(e) => setEditingText(e.target.value)}
+                  />
+                  <div className="card-actions">
+                    <button className="action-btn" onClick={() => handleSave(i)}>💾</button>
+                    <button className="action-btn" onClick={() => setEditingIndex(null)}>❌</button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="card-text">{s}</div>
+                  <div className="card-actions">
+                    <button className="action-btn" onClick={() => handleEdit(i)}>✏️</button>
+                    <button className="action-btn" onClick={() => handleDelete(i)}>🗑️</button>
+                  </div>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-
-      <ul>
-        {suggestions.map((s, i) => (
-          <li
-            key={i}
-            className="suggestion-item"
-            style={{ animationDelay: `${i * 0.1}s` }}
-          >
-            {s}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
